@@ -1,7 +1,6 @@
 # gitignore
 build/
 *.exe
-.git/
 
 # vscode
 .vscode/
