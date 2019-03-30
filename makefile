@@ -15,7 +15,7 @@
 PROJECT		:= clang_test
 SOURCE		:= src 
 BUILD 		:= build
-INCLUDES	:= includes
+INCLUDES	:= include
 
 # SYSTEM VARS
 RM			:= del /S /F /Q
@@ -35,22 +35,22 @@ COBJECTS    = $(CFILES:%.c=$(BUILD)/%.o)
 CPPOBJECTS 	= $(CPPFILES:%.cpp=$(BUILD)/%.o)
 			  
 # Compilers, flags, etc.
-CC 			= clang
-CXX 		= clang++
+CXX 		= clang-cl
+BASEFLAGS	= /Wall /Z7
 IFLAGS		= $(foreach dir,$(INCLUDES),-I$(dir))
-CFLAGS 		= -Wall -g $(IFLAGS)
-CXXFLAGS 	= -Wall -g $(IFLAGS)
+CFLAGS 		= $(BASEFLAGS) /TC $(IFLAGS)
+CXXFLAGS 	= $(BASEFLAGS) /TP -Xclang -std=c++14 $(IFLAGS)
 
 # Object Targets
 $(EXENAME): $(COBJECTS) $(CPPOBJECTS)
-	$(CXX) $(CXXFLAGS) -o $(EXENAME) $(COBJECTS) $(CPPOBJECTS)
+	$(CXX) /o $(EXENAME) $(COBJECTS) $(CPPOBJECTS)
 	@echo ====[Done Building!]====
 
 $(BUILD)/%.o: %.cpp $(HFILES) $(HPPFILES) | $(BUILD)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) /c $< /o $@
 
 $(BUILD)/%.o: %.c $(HFILES) | $(BUILD)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CXX) $(CFLAGS) /c $< /o $@
 
 $(BUILD):
 	mkdir $@
